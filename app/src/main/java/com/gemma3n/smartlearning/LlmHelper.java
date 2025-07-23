@@ -14,8 +14,8 @@ public class LlmHelper {
     private static final String TAG = "LlmHelper";
     private final Context context;
     private final String modelPath;
-    private LlmInference llmInference;
-    private LlmInferenceSession llmChatSession;
+    private LlmInference llmChatInference, llmQuizInference;
+    private LlmInferenceSession llmChatSession, llmQuizSession;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean isLlmReady = false;
     private String quizPrompt;
@@ -43,14 +43,14 @@ public class LlmHelper {
                         .setPreferredBackend(LlmInference.Backend.GPU)
                         .build();
 
-                llmInference = LlmInference.createFromOptions(context, options);
+                llmChatInference = LlmInference.createFromOptions(context, options);
 
                 LlmInferenceSession.LlmInferenceSessionOptions sessionOptions = LlmInferenceSession.LlmInferenceSessionOptions.builder()
                         .setTemperature(0)
                         .setTopK(40)
                         .build();
 
-                llmChatSession = LlmInferenceSession.createFromOptions(llmInference, sessionOptions);
+                llmChatSession = LlmInferenceSession.createFromOptions(llmChatInference, sessionOptions);
                 isLlmReady = true;
                 if (readinessListener != null) {
                     // Post to main thread if listener updates UI
@@ -74,13 +74,13 @@ public class LlmHelper {
     public void setContext(String fileContent) {
         String initialContext = "you are a helpful teacher that helps a student to learn this lesson: ";
         llmChatSession.addQueryChunk(initialContext + fileContent);
-        quizPrompt = "if you are asked for a question give just the question and nothing else. when the answer is submitted just give a very short feedback and the first word of the feedback should be 'correct' or 'incorrect'. don't ask other questions until required\n";
+        quizPrompt = "ask me a question about the lesson, in no more than 80 words";
     }
 
     // Using Consumer for callbacks (requires API 24+).
     // For lower API levels, define custom interfaces.
     public void generateChatResponse(String userInput, Consumer<String> callback) {
-        if (!isLlmReady || llmInference == null || llmChatSession == null) {
+        if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
             return;
         }
@@ -98,7 +98,7 @@ public class LlmHelper {
     }
 
     public void generateQuestionFromContext(Consumer<String> callback) {
-        if (!isLlmReady || llmInference == null || llmChatSession == null) {
+        if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
             return;
         }
@@ -117,13 +117,14 @@ public class LlmHelper {
     }
 
     public void evaluateAnswer(String question, String userAnswer, Consumer<String> callback) {
-        if (!isLlmReady || llmInference == null || llmChatSession == null) {
+        if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
             return;
         }
         executorService.execute(() -> {
             try {
-                llmChatSession.addQueryChunk(userAnswer);
+                String prompt = "Evaluate the following answer to the question in no more than 80 words: ";
+                llmChatSession.addQueryChunk(prompt + userAnswer);
                 String result = llmChatSession.generateResponse();
                 new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result != null ? result : "Could not evaluate answer."));
             } catch (Exception e) {
@@ -134,7 +135,7 @@ public class LlmHelper {
     }
 
     public void reformatLesson(String fileContent, Consumer<String> callback) {
-        if (!isLlmReady || llmInference == null) {
+        if (!isLlmReady || llmChatInference == null) {
             callback.accept(null);
             return;
         }
@@ -142,7 +143,7 @@ public class LlmHelper {
         executorService.execute(() -> {
             try {
                 String prompt = "Reformat the following text into a clear, structured, and readable lesson with a title, headings, subheadings, short paragraphs, lists for items/steps, bold for key terms, maintaining an informative tone, and using Markdown-like syntax for structure: ";
-                String result = llmInference.generateResponse(prompt + fileContent);
+                String result = llmChatInference.generateResponse(prompt + fileContent);
                 new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result));
             } catch (Exception e) {
                 Log.e(TAG, "Error reformatting the lesson: " + e.getMessage(), e);
@@ -154,9 +155,9 @@ public class LlmHelper {
 
     public void close() {
         executorService.execute(() -> {
-            if (llmInference != null) {
-                llmInference.close();
-                llmInference = null;
+            if (llmChatInference != null) {
+                llmChatInference.close();
+                llmChatInference = null;
             }
             if (llmChatSession != null) {
                 llmChatSession.close();

@@ -1,6 +1,8 @@
 package com.gemma3n.smartlearning;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -177,6 +179,7 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     protected void onCleared() {
         super.onCleared();
         if (llmHelper != null) {
+            Log.d("InteractionViewModel", "Clearing LLM resources.");
             llmHelper.close();
         }
     }
