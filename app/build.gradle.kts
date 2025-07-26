@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.tasks.genai)
     implementation(libs.car.ui.lib)
     implementation(libs.localagents.rag)
+    implementation("com.airbnb.android:lottie:6.3.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

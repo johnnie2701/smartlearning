@@ -2,6 +2,14 @@
 
 An intelligent Android educational application that leverages local AI/LLM capabilities to provide interactive learning experiences. Smart Learning allows users to upload text files and interact with the content through AI-powered chat and quiz modes, all running locally on the device using Google's MediaPipe GenAI framework.
 
+## 🌍 Why Smart Learning?
+
+Smart Learning is designed for:
+- 📶 **Offline-first learners**: Study anytime, anywhere — no internet needed
+- 🔐 **Privacy-conscious users**: All AI runs locally; nothing leaves your device
+- 🧑‍🏫 **Educators and tutors**: Upload your own content and let AI do the rest
+- 🌎 **Multilingual support**: Learn in your preferred language using speech input
+
 ## 🚀 Features
 
 ### 📚 File Management
@@ -23,8 +31,8 @@ An intelligent Android educational application that leverages local AI/LLM capab
 
 ### 📱 User Experience
 - **Material Design**: Modern, intuitive interface
-- **Dual Modes**: Seamless switching between chat and quiz modes
-- **Offline Operation**: All AI processing runs locally - no internet required
+- **Dual Modes**: Seamless switching between Chat and Quiz modes
+- **Offline AI Inference**: All AI processing runs locally - no internet required
 - **Responsive UI**: Proper loading states and error handling
 
 ## 🏗️ Architecture

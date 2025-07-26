@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Smart Learning</string>
+    <string name="welcome_subtitle">Learn with AI. Anytime. Anywhere.</string>
+    <string name="get_started">Get Started</string>
+    <string name="how_it_works">How It Works</string>
+    <string name="hero_image_description">Smart Learning Hero Image</string>
+    <string name="copyright_text">Powered by Google Gemma3n</string>
 </resources>
