@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import com.airbnb.lottie.LottieAnimationView;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,7 +42,7 @@ public class ChatFragment extends Fragment {
     private ChatMessagesAdapter chatAdapter;
     private EditText inputEditText;
     private ImageButton sendOrRecordButton; // Changed
-    private ProgressBar chatLoadingIndicator;
+    private LottieAnimationView chatLoadingIndicator;
 
     private SpeechRecognizer speechRecognizer;
     private Intent speechRecognizerIntent;
@@ -180,7 +181,11 @@ public class ChatFragment extends Fragment {
                 // Keep the button enabled, but maybe change icon if loading a response
                 sendOrRecordButton.setEnabled(!isLoading);
                 inputEditText.setEnabled(!isLoading);
-                chatLoadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    chatLoadingIndicator.playAnimation();
+                } else {
+                    chatLoadingIndicator.pauseAnimation();
+                }
             }
         });
     }
