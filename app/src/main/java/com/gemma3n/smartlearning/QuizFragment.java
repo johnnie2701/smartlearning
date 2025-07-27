@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import com.airbnb.lottie.LottieAnimationView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,7 +23,7 @@ public class QuizFragment extends Fragment {
     private TextView questionTextView, feedbackTextView;
     private EditText answerEditText;
     private Button generateQuestionButton, submitAnswerButton;
-    private ProgressBar quizLoadingIndicator;
+    private LottieAnimationView quizLoadingIndicator;
     private LinearLayout questionAnswerLayout, feedbackLayout;
 
     @Nullable
@@ -94,7 +95,11 @@ public class QuizFragment extends Fragment {
         interactionViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
             // Only manage loading state if this fragment is for QUIZ mode
             if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
-                quizLoadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    quizLoadingIndicator.playAnimation();
+                } else {
+                    quizLoadingIndicator.pauseAnimation();
+                }
                 generateQuestionButton.setEnabled(!isLoading);
                 submitAnswerButton.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
                 answerEditText.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
@@ -161,13 +166,17 @@ public class QuizFragment extends Fragment {
         // Handle loading state
         Boolean isLoading = interactionViewModel.isLoading.getValue();
         if (isLoading != null && interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
-            quizLoadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            if (isLoading) {
+                quizLoadingIndicator.playAnimation();
+            } else {
+                quizLoadingIndicator.pauseAnimation();
+            }
             generateQuestionButton.setEnabled(!isLoading);
             submitAnswerButton.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
             answerEditText.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
         } else if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
             // Default to not loading if value is null
-            quizLoadingIndicator.setVisibility(View.GONE);
+            quizLoadingIndicator.pauseAnimation();
             generateQuestionButton.setEnabled(true);
             submitAnswerButton.setEnabled(questionAnswerLayout.getVisibility() == View.VISIBLE);
             answerEditText.setEnabled(questionAnswerLayout.getVisibility() == View.VISIBLE);

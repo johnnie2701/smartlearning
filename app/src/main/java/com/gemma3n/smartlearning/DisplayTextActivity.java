@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.airbnb.lottie.LottieAnimationView;
 import io.noties.markwon.Markwon;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,7 +31,7 @@ public class DisplayTextActivity extends AppCompatActivity {
     private Button startChatButton;
     private Button actionButton;
     private LinearLayout llmLoadingContainer;
-    private ProgressBar reformatLoadingIndicator;
+    private LottieAnimationView reformatLoadingIndicator;
     private TextView loadingMessageText;
     private String fileContent;
     private InteractionViewModel interactionViewModel;
@@ -122,7 +123,7 @@ public class DisplayTextActivity extends AppCompatActivity {
                             interactionViewModel.reformatLesson(fileContent);
                         } else {
                             llmLoadingContainer.setVisibility(View.VISIBLE);
-                            reformatLoadingIndicator.setVisibility(View.VISIBLE);
+                            reformatLoadingIndicator.playAnimation();
                         }
                     });
                 } else {
@@ -144,10 +145,10 @@ public class DisplayTextActivity extends AppCompatActivity {
             Log.d("DisplayTextActivity", "isLoading: " + isLoading);
             if (isLoading) {
                 llmLoadingContainer.setVisibility(View.VISIBLE);
-                reformatLoadingIndicator.setVisibility(View.VISIBLE);
+                reformatLoadingIndicator.playAnimation();
             } else {
                 llmLoadingContainer.setVisibility(View.GONE);
-                reformatLoadingIndicator.setVisibility(View.GONE);
+                reformatLoadingIndicator.pauseAnimation();
             }
         });
 

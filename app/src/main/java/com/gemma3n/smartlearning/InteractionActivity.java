@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.airbnb.lottie.LottieAnimationView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,7 +20,7 @@ public class InteractionActivity extends AppCompatActivity {
     private InteractionViewModel interactionViewModel;
     private String fileContent;
     private Button toggleModeButton;
-    private ProgressBar llmLoadingIndicator;
+    private LottieAnimationView llmLoadingIndicator;
     private TextView llmLoadingText;
     private LinearLayout llmLoadingContainer;
 
@@ -54,7 +55,7 @@ public class InteractionActivity extends AppCompatActivity {
             Log.d("InteractionActivity", "isLlmReady changed: " + isReady);
             if (isReady) {
                 Log.d("InteractionActivity", "LLM Ready");
-                llmLoadingIndicator.setVisibility(View.GONE);
+                llmLoadingIndicator.pauseAnimation();
                 llmLoadingText.setVisibility(View.GONE);
                 llmLoadingContainer.setVisibility(View.GONE);
                 toggleModeButton.setVisibility(View.VISIBLE);
@@ -86,7 +87,7 @@ public class InteractionActivity extends AppCompatActivity {
 //                }
 
                 llmLoadingContainer.setVisibility(View.VISIBLE);
-                llmLoadingIndicator.setVisibility(View.VISIBLE);
+                llmLoadingIndicator.playAnimation();
                 llmLoadingText.setText("Initializing LLM... This may take a moment.");
                 llmLoadingText.setVisibility(View.VISIBLE);
                 toggleModeButton.setVisibility(View.GONE);

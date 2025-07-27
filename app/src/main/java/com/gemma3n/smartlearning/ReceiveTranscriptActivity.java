@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.airbnb.lottie.LottieAnimationView;
 import androidx.appcompat.widget.Toolbar;
 
 import java.io.BufferedReader;
@@ -32,7 +33,7 @@ public class ReceiveTranscriptActivity extends AppCompatActivity {
     private EditText fileNameEditText;
     private Button saveButton;
     private Button cancelButton;
-    private ProgressBar progressBar;
+    private LottieAnimationView progressBar;
     private TextView statusText;
     private String sharedContent;
     private String originalFileName;
@@ -237,7 +238,7 @@ public class ReceiveTranscriptActivity extends AppCompatActivity {
     }
 
     private void showProgress(String message) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.playAnimation();
         statusText.setText(message);
         statusText.setVisibility(View.VISIBLE);
         saveButton.setEnabled(false);
@@ -245,7 +246,7 @@ public class ReceiveTranscriptActivity extends AppCompatActivity {
     }
 
     private void showSuccess(String message) {
-        progressBar.setVisibility(View.GONE);
+        progressBar.pauseAnimation();
         statusText.setText(message);
         statusText.setVisibility(View.VISIBLE);
         saveButton.setEnabled(true);
@@ -253,7 +254,7 @@ public class ReceiveTranscriptActivity extends AppCompatActivity {
     }
 
     private void showError(String message) {
-        progressBar.setVisibility(View.GONE);
+        progressBar.pauseAnimation();
         statusText.setText("Error: " + message);
         statusText.setVisibility(View.VISIBLE);
         saveButton.setEnabled(false);
