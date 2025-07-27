@@ -39,6 +39,8 @@ dependencies {
     implementation(libs.car.ui.lib)
     implementation(libs.localagents.rag)
     implementation("com.airbnb.android:lottie:6.3.0")
+    implementation("io.noties.markwon:core:4.6.2")
+    implementation("io.noties.markwon:html:4.6.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

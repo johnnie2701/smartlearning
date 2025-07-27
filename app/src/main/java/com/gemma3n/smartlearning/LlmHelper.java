@@ -142,7 +142,15 @@ public class LlmHelper {
 
         executorService.execute(() -> {
             try {
-                String prompt = "Reformat the following text into a clear, structured, and readable lesson with a title, headings, subheadings, short paragraphs, lists for items/steps, bold for key terms, maintaining an informative tone, and using Markdown-like syntax for structure: ";
+                String prompt = "Reformat the following text into a clear, structured, and readable lesson. Use proper Markdown formatting:\n\n" +
+                        "- Use # for main title\n" +
+                        "- Use ## for main headings\n" +
+                        "- Use ### for subheadings\n" +
+                        "- Use **bold** for key terms and important concepts\n" +
+                        "- Use bullet points (*) for lists\n" +
+                        "- Keep paragraphs short and readable\n" +
+                        "- Maintain an informative, educational tone\n\n" +
+                        "Here's the text to reformat: ";
                 String result = llmChatInference.generateResponse(prompt + fileContent);
                 new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result));
             } catch (Exception e) {

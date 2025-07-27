@@ -69,7 +69,18 @@
         <ProgressBar
             android:id="@+id/reformatLoadingIndicator"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/loadingMessageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reformat_loading_message"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:paddingHorizontal="32dp" />
 
     </LinearLayout>
 
