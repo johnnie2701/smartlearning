@@ -23,14 +23,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Start Chat" />
+            android:text="Start Chat"
+            android:background="@drawable/button_primary_background"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/reformatButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Reformat" />
+            android:text="Reformat"
+            android:background="@drawable/button_primary_background"
+            android:textColor="@color/white" />
     </LinearLayout>
 
     <ScrollView
