@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import io.noties.markwon.Markwon;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
@@ -30,9 +31,11 @@ public class DisplayTextActivity extends AppCompatActivity {
     private Button actionButton;
     private LinearLayout llmLoadingContainer;
     private ProgressBar reformatLoadingIndicator;
+    private TextView loadingMessageText;
     private String fileContent;
     private InteractionViewModel interactionViewModel;
     private String filePath;
+    private Markwon markwon;
 
     private enum ButtonState {
         READY_TO_REFORMAT,
@@ -62,6 +65,10 @@ public class DisplayTextActivity extends AppCompatActivity {
         actionButton = findViewById(R.id.reformatButton);
         llmLoadingContainer = findViewById(R.id.llmLoadingContainer);
         reformatLoadingIndicator = findViewById(R.id.reformatLoadingIndicator);
+        loadingMessageText = findViewById(R.id.loadingMessageText);
+
+        // Initialize Markwon for markdown rendering
+        markwon = Markwon.create(this);
 
         interactionViewModel = new ViewModelProvider(this).get(InteractionViewModel.class);
 
@@ -69,7 +76,8 @@ public class DisplayTextActivity extends AppCompatActivity {
         if  (intent != null) {
             if (intent.hasExtra(EXTRA_FILE_CONTENT)) {
                 fileContent = intent.getStringExtra(EXTRA_FILE_CONTENT);
-                textContentTextView.setText(fileContent);
+                // Render markdown content
+                markwon.setMarkdown(textContentTextView, fileContent);
             } else {
                 Toast.makeText(this, "No file content provided.", Toast.LENGTH_LONG).show();
                 finish();
@@ -103,6 +111,9 @@ public class DisplayTextActivity extends AppCompatActivity {
             if (currentButtonState == ButtonState.READY_TO_REFORMAT) {
                 Log.d("DisplayTextActivity", "Reformat action initiated.");
                 if (fileContent != null && !fileContent.isEmpty()) {
+                    // Show initial message about reformat duration
+                    Toast.makeText(this, "Starting reformat... This may take a few minutes.", Toast.LENGTH_LONG).show();
+                    
                     interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task");
 
                     interactionViewModel.isLlmReady.observe(this, isReady -> {
@@ -144,8 +155,10 @@ public class DisplayTextActivity extends AppCompatActivity {
             if (reformattedLesson != null && !reformattedLesson.isEmpty()) {
                 Log.d("DisplayTextActivity", "reformattedLesson received");
                 fileContent = reformattedLesson;
-                if (textContentTextView != null)
-                    textContentTextView.setText(reformattedLesson);
+                if (textContentTextView != null) {
+                    // Render markdown content
+                    markwon.setMarkdown(textContentTextView, reformattedLesson);
+                }
                 contentToSave = reformattedLesson;
                 currentButtonState = ButtonState.READY_TO_SAVE;
                 updateButtonAppearance();
