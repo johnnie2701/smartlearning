@@ -14,10 +14,22 @@ import java.util.List;
 class ChatMessagePojo {
     public final String text;
     public final boolean isUser;
+    public final boolean isLoading;
 
     public ChatMessagePojo(String text, boolean isUser) {
         this.text = text;
         this.isUser = isUser;
+        this.isLoading = false;
+    }
+    
+    public ChatMessagePojo(String text, boolean isUser, boolean isLoading) {
+        this.text = text;
+        this.isUser = isUser;
+        this.isLoading = isLoading;
+    }
+    
+    public static ChatMessagePojo createLoadingMessage() {
+        return new ChatMessagePojo("", false, true);
     }
 }
 
@@ -98,17 +110,28 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
 
     // --- Chat Methods ---
     public void sendChatMessage(String message) {
-        if (message == null || message.trim().isEmpty() || Boolean.TRUE.equals(_isLoading.getValue())) return;
+        if (message == null || message.trim().isEmpty() || Boolean.TRUE.equals(_isLoading.getValue())) {
+            Log.d("InteractionViewModel", "sendChatMessage: Skipping - message empty or already loading");
+            return;
+        }
+        Log.d("InteractionViewModel", "sendChatMessage: Starting - " + message);
         addChatMessage(message, true);
+        addLoadingMessage();
         _isLoading.setValue(true);
+        Log.d("InteractionViewModel", "sendChatMessage: Loading set to true");
         if (llmHelper != null) {
             llmHelper.generateChatResponse(message, response -> {
+                Log.d("InteractionViewModel", "sendChatMessage: Response received");
+                removeLoadingMessage();
                 addChatMessage(response, false);
                 _isLoading.setValue(false);
+                Log.d("InteractionViewModel", "sendChatMessage: Loading set to false");
             });
         } else {
+            removeLoadingMessage();
             addChatMessage("LLM not initialized.", false);
             _isLoading.setValue(false);
+            Log.d("InteractionViewModel", "sendChatMessage: LLM not initialized, loading set to false");
         }
     }
 
@@ -120,6 +143,28 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
         ArrayList<ChatMessagePojo> updatedMessages = new ArrayList<>(currentMessages);
         updatedMessages.add(new ChatMessagePojo(text, isUser));
         _chatMessages.setValue(updatedMessages);
+    }
+    
+    private void addLoadingMessage() {
+        List<ChatMessagePojo> currentMessages = _chatMessages.getValue();
+        if (currentMessages == null) {
+            currentMessages = new ArrayList<>();
+        }
+        ArrayList<ChatMessagePojo> updatedMessages = new ArrayList<>(currentMessages);
+        updatedMessages.add(ChatMessagePojo.createLoadingMessage());
+        _chatMessages.setValue(updatedMessages);
+    }
+    
+    private void removeLoadingMessage() {
+        List<ChatMessagePojo> currentMessages = _chatMessages.getValue();
+        if (currentMessages != null && !currentMessages.isEmpty()) {
+            ArrayList<ChatMessagePojo> updatedMessages = new ArrayList<>(currentMessages);
+            // Remove the last message if it's a loading message
+            if (updatedMessages.size() > 0 && updatedMessages.get(updatedMessages.size() - 1).isLoading) {
+                updatedMessages.remove(updatedMessages.size() - 1);
+                _chatMessages.setValue(updatedMessages);
+            }
+        }
     }
 
     // --- Quiz Methods ---

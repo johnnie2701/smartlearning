@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.noties.markwon.Markwon;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -47,6 +48,7 @@ public class ChatFragment extends Fragment {
     private SpeechRecognizer speechRecognizer;
     private Intent speechRecognizerIntent;
     private boolean isListening = false;
+    private Markwon markwon; // For rendering markdown in chat responses
 
     // Enum to manage button state
     private enum ButtonState {
@@ -71,6 +73,10 @@ public class ChatFragment extends Fragment {
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
         chatRecyclerView.setAdapter(chatAdapter);
+
+        // Initialize Markwon for markdown rendering
+        markwon = Markwon.create(requireContext());
+        chatAdapter.setMarkwon(markwon);
 
         setupSpeechRecognizer();
         return view;
@@ -177,15 +183,14 @@ public class ChatFragment extends Fragment {
         });
 
         interactionViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            Log.d("ChatFragment", "Loading state changed: " + isLoading + ", Mode: " + interactionViewModel.interactionMode.getValue());
             if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.CHAT) {
                 // Keep the button enabled, but maybe change icon if loading a response
                 sendOrRecordButton.setEnabled(!isLoading);
                 inputEditText.setEnabled(!isLoading);
-                if (isLoading) {
-                    chatLoadingIndicator.playAnimation();
-                } else {
-                    chatLoadingIndicator.pauseAnimation();
-                }
+                Log.d("ChatFragment", "Input controls " + (isLoading ? "disabled" : "enabled"));
+            } else {
+                Log.d("ChatFragment", "Not in CHAT mode, ignoring loading state");
             }
         });
     }
