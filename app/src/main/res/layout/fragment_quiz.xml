@@ -16,7 +16,9 @@
             android:id="@+id/generateQuestionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Generate Question" />
+            android:text="Generate Question"
+            android:background="@drawable/button_primary_background"
+            android:textColor="@color/white" />
 
         <ProgressBar
             android:id="@+id/quizLoadingIndicator"
@@ -67,7 +69,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Submit Answer" />
+                android:text="Submit Answer"
+                android:background="@drawable/button_primary_background"
+                android:textColor="@color/white" />
         </LinearLayout>
 
 

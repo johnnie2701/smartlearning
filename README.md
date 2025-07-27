@@ -112,6 +112,11 @@ androidTestImplementation(libs.espresso.core)
    interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task");
    ```
 
+4. **Assets and Resources**
+   - **Lottie Animations**: Place JSON files in `app/src/main/res/raw/` for Lottie rendering
+   - **Other Assets**: Place files in `app/src/main/assets/` for general asset storage
+   - **Note**: Both folders are tracked in git to preserve animations and assets
+
 4. **Build and Run**
    - Sync project with Gradle files
    - Build the project
