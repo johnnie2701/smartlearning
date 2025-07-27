@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import io.noties.markwon.Markwon;
+import com.airbnb.lottie.LottieAnimationView;
 import java.util.List;
 
 // Assumes ChatMessagePojo exists as defined previously:
@@ -19,11 +21,17 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
 
     private static final int VIEW_TYPE_USER_MESSAGE = 1;
     private static final int VIEW_TYPE_AI_MESSAGE = 2;
+    private static final int VIEW_TYPE_LOADING_MESSAGE = 3;
 
     private List<ChatMessagePojo> messages;
+    private Markwon markwon;
 
     public ChatMessagesAdapter(List<ChatMessagePojo> messages) {
         this.messages = messages;
+    }
+    
+    public void setMarkwon(Markwon markwon) {
+        this.markwon = markwon;
     }
 
     public void setMessages(List<ChatMessagePojo> newMessages) {
@@ -34,7 +42,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
     @Override
     public int getItemViewType(int position) {
         ChatMessagePojo message = messages.get(position);
-        if (message.isUser) {
+        if (message.isLoading) {
+            return VIEW_TYPE_LOADING_MESSAGE;
+        } else if (message.isUser) {
             return VIEW_TYPE_USER_MESSAGE;
         } else {
             return VIEW_TYPE_AI_MESSAGE;
@@ -48,10 +58,16 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
         View view;
         if (viewType == VIEW_TYPE_USER_MESSAGE) {
             view = inflater.inflate(R.layout.item_chat_message_user, parent, false);
+        } else if (viewType == VIEW_TYPE_LOADING_MESSAGE) {
+            view = inflater.inflate(R.layout.item_chat_message_loading, parent, false);
         } else { // VIEW_TYPE_AI_MESSAGE
             view = inflater.inflate(R.layout.item_chat_message_ai, parent, false);
         }
-        return new MessageViewHolder(view);
+        MessageViewHolder holder = new MessageViewHolder(view, viewType);
+        if (markwon != null) {
+            holder.setMarkwon(markwon);
+        }
+        return holder;
     }
 
     @Override
@@ -67,16 +83,39 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapte
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
+        LottieAnimationView loadingAnimation;
+        Markwon markwon;
+        int viewType;
 
-        public MessageViewHolder(@NonNull View itemView) {
+        public MessageViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
-            // The TextView ID is the same in both item_chat_message_user.xml and item_chat_message_ai.xml
-            messageTextView = itemView.findViewById(R.id.messageTextView);
+            this.viewType = viewType;
+            
+            if (viewType == VIEW_TYPE_LOADING_MESSAGE) {
+                loadingAnimation = itemView.findViewById(R.id.loadingAnimation);
+            } else {
+                // The TextView ID is the same in both item_chat_message_user.xml and item_chat_message_ai.xml
+                messageTextView = itemView.findViewById(R.id.messageTextView);
+            }
+        }
+        
+        public void setMarkwon(Markwon markwon) {
+            this.markwon = markwon;
         }
 
         void bind(ChatMessagePojo message) {
-            if (messageTextView != null) {
-                messageTextView.setText(message.text);
+            if (viewType == VIEW_TYPE_LOADING_MESSAGE) {
+                if (loadingAnimation != null) {
+                    loadingAnimation.playAnimation();
+                }
+            } else if (messageTextView != null) {
+                if (markwon != null && !message.isUser) {
+                    // Use Markwon for AI messages (which may contain markdown)
+                    markwon.setMarkdown(messageTextView, message.text);
+                } else {
+                    // Use plain text for user messages
+                    messageTextView.setText(message.text);
+                }
             }
         }
     }
