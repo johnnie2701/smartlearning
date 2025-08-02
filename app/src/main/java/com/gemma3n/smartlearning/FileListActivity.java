@@ -172,7 +172,7 @@ public class FileListActivity extends AppCompatActivity {
 //                        fileListViewModel.loadFiles(lessonDirectoryPath);
 //                        return true;
 //                    }
-                    EmbedData<String> embedData = EmbedData.create(query, EmbedData.TaskType.SEMANTIC_SIMILARITY);
+                    EmbedData<String> embedData = EmbedData.create(query, EmbedData.TaskType.RETRIEVAL_QUERY);
                     EmbeddingRequest<String> embeddingRequest = EmbeddingRequest.create(Collections.singletonList(embedData));
 
                     ListenableFuture<ImmutableList<Float>> embeddingFuture =
@@ -305,7 +305,7 @@ public class FileListActivity extends AppCompatActivity {
 
             List<EmbedData<String>> embedDataList = new ArrayList<>();
             for (String chunk : textChunks) {
-                EmbedData<String> embedData = EmbedData.create(chunk, EmbedData.TaskType.SEMANTIC_SIMILARITY);
+                EmbedData<String> embedData = EmbedData.create(chunk, EmbedData.TaskType.RETRIEVAL_DOCUMENT);
                 embedDataList.add(embedData);
             }
             EmbeddingRequest<String> embeddingRequest =
@@ -321,7 +321,7 @@ public class FileListActivity extends AppCompatActivity {
                     for (ImmutableList<Float> embedding : embeddings) {
 
                         // Build the metadata for the record
-                        ImmutableMap<String, Object> metadata = ImmutableMap.of("file_name", fileName);
+                        ImmutableMap<String, Object> metadata = ImmutableMap.of("file_name", destinationFile.getAbsolutePath());
 
                         // Create the Record to be stored in the VectorStore
                         VectorStoreRecord<String> vectorStoreRecord = VectorStoreRecord.create("", embedding, metadata);
