@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import com.airbnb.lottie.LottieAnimationView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,7 +23,7 @@ public class QuizFragment extends Fragment {
     private TextView questionTextView, feedbackTextView;
     private EditText answerEditText;
     private Button generateQuestionButton, submitAnswerButton;
-    private ProgressBar quizLoadingIndicator;
+    private LottieAnimationView quizLoadingIndicator;
     private LinearLayout questionAnswerLayout, feedbackLayout;
 
     @Nullable
@@ -63,7 +64,9 @@ public class QuizFragment extends Fragment {
     private void setupObservers() {
         interactionViewModel.currentQuestion.observe(getViewLifecycleOwner(), question -> {
             if (question != null && !question.isEmpty()) {
-                questionTextView.setText(question);
+                // Clean and format the question for better readability
+                String cleanQuestion = cleanQuestionText(question);
+                questionTextView.setText(cleanQuestion);
                 questionAnswerLayout.setVisibility(View.VISIBLE);
                 answerEditText.setText(""); // Clear previous answer
                 feedbackLayout.setVisibility(View.GONE); // Hide old feedback
@@ -94,7 +97,11 @@ public class QuizFragment extends Fragment {
         interactionViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
             // Only manage loading state if this fragment is for QUIZ mode
             if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
-                quizLoadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    quizLoadingIndicator.playAnimation();
+                } else {
+                    quizLoadingIndicator.pauseAnimation();
+                }
                 generateQuestionButton.setEnabled(!isLoading);
                 submitAnswerButton.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
                 answerEditText.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
@@ -137,11 +144,36 @@ public class QuizFragment extends Fragment {
         });
     }
 
+    /**
+     * Clean and format question text for better readability
+     */
+    private String cleanQuestionText(String question) {
+        if (question == null) return "";
+        
+        // Remove common prefixes and explanatory text
+        String cleaned = question.replaceAll("(?i)^(here's a question|question:|based on the lesson|here's what|this question).*?:\\s*", "");
+        cleaned = cleaned.replaceAll("(?i)\\s*this question probes.*$", "");
+        cleaned = cleaned.replaceAll("(?i)\\s*this question tests.*$", "");
+        cleaned = cleaned.replaceAll("(?i)\\s*it aligns with.*$", "");
+        cleaned = cleaned.replaceAll("(?i)\\s*it focuses on.*$", "");
+        
+        // Remove extra whitespace and newlines
+        cleaned = cleaned.trim().replaceAll("\\n+", " ").replaceAll("\\s+", " ");
+        
+        // Ensure it ends with a question mark if it doesn't already
+        if (!cleaned.endsWith("?")) {
+            cleaned = cleaned.replaceAll("\\.$", "?");
+        }
+        
+        return cleaned;
+    }
+    
     private void updateUiBasedOnViewModelState() {
         // Handle current question display
         String currentQ = interactionViewModel.currentQuestion.getValue();
         if (currentQ != null && !currentQ.isEmpty()) {
-            questionTextView.setText(currentQ);
+            String cleanQuestion = cleanQuestionText(currentQ);
+            questionTextView.setText(cleanQuestion);
             questionAnswerLayout.setVisibility(View.VISIBLE);
             generateQuestionButton.setText("Next Question");
         } else {
@@ -161,13 +193,17 @@ public class QuizFragment extends Fragment {
         // Handle loading state
         Boolean isLoading = interactionViewModel.isLoading.getValue();
         if (isLoading != null && interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
-            quizLoadingIndicator.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            if (isLoading) {
+                quizLoadingIndicator.playAnimation();
+            } else {
+                quizLoadingIndicator.pauseAnimation();
+            }
             generateQuestionButton.setEnabled(!isLoading);
             submitAnswerButton.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
             answerEditText.setEnabled(!isLoading && questionAnswerLayout.getVisibility() == View.VISIBLE);
         } else if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.QUIZ) {
             // Default to not loading if value is null
-            quizLoadingIndicator.setVisibility(View.GONE);
+            quizLoadingIndicator.pauseAnimation();
             generateQuestionButton.setEnabled(true);
             submitAnswerButton.setEnabled(questionAnswerLayout.getVisibility() == View.VISIBLE);
             answerEditText.setEnabled(questionAnswerLayout.getVisibility() == View.VISIBLE);

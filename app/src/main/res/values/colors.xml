@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Welcome Screen Colors -->
+    <color name="slate_50">#F8FAFC</color>
+    <color name="text_primary">#0D141C</color>
+    <color name="text_secondary">#49739C</color>
+    <color name="primary_blue">#248BF3</color>
+    <color name="button_secondary">#E7EDF4</color>
 </resources>

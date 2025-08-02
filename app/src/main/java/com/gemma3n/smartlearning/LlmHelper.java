@@ -71,6 +71,7 @@ public class LlmHelper {
         return isLlmReady;
     }
 
+// TODO: Fix this
     public void setContext(String fileContent) {
         String initialContext = "you are a helpful teacher that helps a student to learn this lesson: ";
         llmChatSession.addQueryChunk(initialContext + fileContent);
@@ -97,6 +98,7 @@ public class LlmHelper {
         });
     }
 
+//TODO: Fix quiz prompts
     public void generateQuestionFromContext(Consumer<String> callback) {
         if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
@@ -142,8 +144,17 @@ public class LlmHelper {
 
         executorService.execute(() -> {
             try {
-                String prompt = "Reformat the following text into a clear, structured, and readable lesson with a title, headings, subheadings, short paragraphs, lists for items/steps, bold for key terms, maintaining an informative tone, and using Markdown-like syntax for structure: ";
-                String result = llmChatInference.generateResponse(prompt + fileContent);
+                String prompt = "Reformat this educational content into clear, structured markdown:\n\n" +
+                        "1. Create a main title using #\n" +
+                        "2. Use ## for main sections\n" +
+                        "3. Use ### for subsections\n" +
+                        "4. Make key terms and concepts **bold**\n" +
+                        "5. Use bullet points (*) for lists\n" +
+                        "6. Keep paragraphs short (2-3 sentences max)\n" +
+                        "7. Organize information logically\n" +
+                        "8. Make it easy to read and study\n\n" +
+                        "Content to reformat:\n" + fileContent;
+                String result = llmChatInference.generateResponse(prompt);
                 new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result));
             } catch (Exception e) {
                 Log.e(TAG, "Error reformatting the lesson: " + e.getMessage(), e);

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Smart Learning</string>
+    <string name="welcome_subtitle">Learn with AI. Anytime. Anywhere.</string>
+    <string name="get_started">Get Started</string>
+    <string name="how_it_works">How It Works</string>
+    <string name="hero_image_description">Smart Learning Hero Image</string>
+    <string name="copyright_text">Powered by Google Gemma3n</string>
+    <string name="import_shared_content">Import Shared Content</string>
+    <string name="filename">Filename</string>
+    <string name="content_preview">Content Preview</string>
+    <string name="save_to_smart_learning">Save to Smart Learning</string>
+    <string name="cancel">Cancel</string>
+    <string name="reformat_loading_message">Reformatting content...\n\nThis can take up to a few minutes depending on the content size.\n\nPlease be patient while the AI processes your document.</string>
 </resources>

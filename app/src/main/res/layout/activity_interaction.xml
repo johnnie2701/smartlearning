@@ -15,9 +15,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/primary_blue"
             app:title="LLM Interaction"
-            app:titleTextColor="@android:color/white">
+            app:titleTextColor="@android:color/white"
+            app:theme="@style/ToolbarTheme.BlueBackground">
 
             <Button
                 android:id="@+id/toggleModeButton"
@@ -54,10 +55,13 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/llmLoadingIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading" />
 
         <TextView
             android:id="@+id/llmLoadingText"

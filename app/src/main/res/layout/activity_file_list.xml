@@ -21,10 +21,10 @@
                 android:id="@+id/toolbar_file_list"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/primary_blue"
                 app:title="Select a lesson"
                 app:titleTextColor="@android:color/white"
-                app:theme="@style/ToolbarTheme.WhiteText"/>
+                app:theme="@style/ToolbarTheme.BlueBackground"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 

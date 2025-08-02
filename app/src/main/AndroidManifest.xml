@@ -14,13 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartLearning">
         <activity
-            android:name=".FileListActivity"
-            android:exported="true">
+            android:name=".WelcomeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SmartLearning">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".FileListActivity"
+            android:exported="false" />
 
         <activity
             android:name=".InteractionActivity"
@@ -31,6 +36,32 @@
         <activity
             android:name=".DisplayTextActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ReceiveTranscriptActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SmartLearning">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/msword" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            </intent-filter>
+        </activity>
 
     </application>
 
