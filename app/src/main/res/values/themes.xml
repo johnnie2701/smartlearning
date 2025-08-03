@@ -10,7 +10,9 @@
         <item name="colorSecondaryVariant">@color/text_secondary</item>
         <item name="colorOnSecondary">@color/text_primary</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_blue</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+        <!-- Make status bar light for dark backgrounds -->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <!-- Background colors -->
         <item name="android:colorBackground">@color/slate_50</item>
         <item name="colorSurface">@color/white</item>
