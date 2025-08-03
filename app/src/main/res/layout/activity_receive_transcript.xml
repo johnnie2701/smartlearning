@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/slate_50">
+    android:background="@color/slate_50"
+    android:fitsSystemWindows="true">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -118,7 +119,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_secondary_background"
             android:text="Cancel"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <Button
@@ -128,7 +129,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@drawable/button_primary_background"
-            android:text="Save to Smart Learning"
+            android:text="Save"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

@@ -8,7 +8,7 @@
     <string name="import_shared_content">Import Shared Content</string>
     <string name="filename">Filename</string>
     <string name="content_preview">Content Preview</string>
-    <string name="save_to_smart_learning">Save to Smart Learning</string>
+    <string name="save_to_smart_learning">Save</string>
     <string name="cancel">Cancel</string>
     <string name="reformat_loading_message">Reformatting content...\n\nThis can take up to a few minutes depending on the content size.\n\nPlease be patient while the AI processes your document.</string>
 </resources>
