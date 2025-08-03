@@ -96,6 +96,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:text="Your Answer:"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+            <TextView
+                android:id="@+id/userAnswerTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                tools:text="The Golgi apparatus modifies and packages proteins." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Feedback:"
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
