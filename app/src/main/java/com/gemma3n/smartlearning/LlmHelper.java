@@ -14,8 +14,8 @@ public class LlmHelper {
     private static final String TAG = "LlmHelper";
     private final Context context;
     private final String modelPath;
-    private LlmInference llmChatInference, llmQuizInference;
-    private LlmInferenceSession llmChatSession, llmQuizSession;
+    private LlmInference llmChatInference;
+    private LlmInferenceSession llmChatSession;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean isLlmReady = false;
     private String quizPrompt;

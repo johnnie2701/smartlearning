@@ -199,8 +199,6 @@ public class DisplayTextActivity extends AppCompatActivity {
             fileContent = content; // The saved content is now the current content
             contentToSave = null; // Clear content staged for saving
             currentButtonState = ButtonState.READY_TO_REFORMAT; // Reset to reformat
-            // Or you might want to disable the button or change its text to "Saved!" temporarily
-            // Or even finish the activity if saving is the final step.
             updateButtonAppearance();
 
         } catch (IOException e) {

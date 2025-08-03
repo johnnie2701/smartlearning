@@ -90,8 +90,6 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     public void setFileContext(String content) {
         if (llmHelper != null && llmHelper.isLlmReady()) {
             llmHelper.setContext(content);
-            // Optionally add an initial message
-            // addChatMessage("Context loaded.", false);
         } else {
             pendingFileContext = content; // Store if LLM not ready yet
         }

@@ -103,8 +103,6 @@ public class FileListActivity extends AppCompatActivity {
 
         fileListViewModel.selectedFileContent.observe(this, content -> {
             if (content != null) {
-                // Navigate to the next screen (InteractionActivity)
-//                Intent intent = new Intent(FileListActivity.this, InteractionActivity.class);
                 Intent intent = new Intent(FileListActivity.this, DisplayTextActivity.class);
                 intent.putExtra(DisplayTextActivity.EXTRA_FILE_CONTENT, content);
                 intent.putExtra(DisplayTextActivity.EXTRA_FILE_PATH, selectedFile != null ? selectedFile.getAbsolutePath() : null);
@@ -168,10 +166,6 @@ public class FileListActivity extends AppCompatActivity {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-//                    if (query == null || query.trim().isEmpty()) {
-//                        fileListViewModel.loadFiles(lessonDirectoryPath);
-//                        return true;
-//                    }
                     EmbedData<String> embedData = EmbedData.create(query, EmbedData.TaskType.RETRIEVAL_QUERY);
                     EmbeddingRequest<String> embeddingRequest = EmbeddingRequest.create(Collections.singletonList(embedData));
 
@@ -245,9 +239,6 @@ public class FileListActivity extends AppCompatActivity {
         // For broad compatibility, some file managers might need "*/*" if they don't map .md or .text well.
         // If you strictly want only these extensions, you might need to filter after selection based on file name.
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-
-        // Optionally, you can allow multiple file selection
-        // intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
         try {
             filePickerLauncher.launch(intent);

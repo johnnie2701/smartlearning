@@ -10,12 +10,6 @@ import io.noties.markwon.Markwon;
 import com.airbnb.lottie.LottieAnimationView;
 import java.util.List;
 
-// Assumes ChatMessagePojo exists as defined previously:
-// class ChatMessagePojo {
-// public final String text;
-// public final boolean isUser;
-// public ChatMessagePojo(String text, boolean isUser) { this.text = text; this.isUser = isUser; }
-// }
 
 public class ChatMessagesAdapter extends RecyclerView.Adapter<ChatMessagesAdapter.MessageViewHolder> {
 

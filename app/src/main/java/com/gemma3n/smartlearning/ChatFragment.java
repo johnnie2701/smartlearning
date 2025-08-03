@@ -104,7 +104,6 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onReadyForSpeech(Bundle params) {
                     Log.d("SpeechRecognizer", "Ready for speech");
-                    // You could change UI here, e.g., mic icon to glowing
                 }
 
                 @Override
@@ -225,30 +224,6 @@ public class ChatFragment extends Fragment {
                 handleRecordButtonPress();
             }
         });
-
-        // Optional: Use OnTouchListener for press-and-hold to record
-        // This is a more common UX for voice input
-//        sendOrRecordButton.setOnTouchListener((view, motionEvent) -> {
-//            if (currentButtonState == ButtonState.RECORD) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        if (!isListening) {
-//                            startListening();
-//                            sendOrRecordButton.setImageResource(R.drawable.ic_mic); // Can use a "listening" mic icon
-//                            view.performClick(); // For accessibility
-//                        }
-//                        return true; // Consume event
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        if (isListening) {
-//                            stopListening();
-//                            sendOrRecordButton.setImageResource(R.drawable.ic_mic); // Back to normal mic
-//                        }
-//                        return true; // Consume event
-//                }
-//            }
-//            return false; // Let onClickListener handle if it's SEND state or other cases
-//        });
     }
 
     private void handleRecordButtonPress() {
