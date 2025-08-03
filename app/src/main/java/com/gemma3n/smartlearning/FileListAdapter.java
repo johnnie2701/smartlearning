@@ -10,8 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-// Replace R.layout.file_list_item with your actual item layout
-// Replace R.id.fileNameTextView with the ID of the TextView in your item layout
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileViewHolder> {
 

@@ -210,10 +210,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Gemma Team**: For the open-source language model
 - **Android Community**: For continuous platform improvements
 
-## 📞 Support
+## 📖 Citation
 
-For support, please open an issue in the GitHub repository or contact the development team.
+This project was developed as part of the Google Gemma 3n Impact Challenge. If you use this work, please cite:
 
----
+```bibtex
+@misc{google-gemma-3n-hackathon,
+    author = {Glenn Cameron and Omar Sanseviero and Gus Martins and Ian Ballantyne and Kat Black and Mark Sherwood and Milen Ferev and Ronghui Zhu and Nilay Chauhan and Pulkit Bhuwalka and Emily Kosa and Addison Howard},
+    title = {Google - The Gemma 3n Impact Challenge},
+    year = {2025},
+    howpublished = {\url{https://kaggle.com/competitions/google-gemma-3n-hackathon}},
+    note = {Kaggle}
+}
+```
 
-**Smart Learning** - Empowering education through local AI technology. 
+**Competition**: [Google - The Gemma 3n Impact Challenge](https://kaggle.com/competitions/google-gemma-3n-hackathon)  
+**Platform**: Kaggle  
+**Year**: 2025
+
+## 📞 Credits and Contact
+Project by Ionel Cristian Miroslav & Nicoleta Mocanu 
+
+Contact: miroslav.ic27@gmail.com,  nicoleta.mocanu@gmail.com

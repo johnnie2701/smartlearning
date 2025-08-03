@@ -1,3 +1,15 @@
+/*
+ * Smart Learning - AI-Powered Educational Android Application
+ * 
+ * This project was developed as part of the Google Gemma 3n Impact Challenge.
+ * 
+ * Competition: https://kaggle.com/competitions/google-gemma-3n-hackathon
+ * Authors: Glenn Cameron, Omar Sanseviero, Gus Martins, Ian Ballantyne, 
+ *            Kat Black, Mark Sherwood, Milen Ferev, Ronghui Zhu, 
+ *            Nilay Chauhan, Pulkit Bhuwalka, Emily Kosa, Addison Howard
+ * Year: 2025
+ */
+
 package com.gemma3n.smartlearning;
 
 import android.app.Application;

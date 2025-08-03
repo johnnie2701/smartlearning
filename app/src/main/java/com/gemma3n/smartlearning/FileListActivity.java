@@ -1,3 +1,15 @@
+/*
+ * Smart Learning - AI-Powered Educational Android Application
+ * 
+ * This project was developed as part of the Google Gemma 3n Impact Challenge.
+ * 
+ * Competition: https://kaggle.com/competitions/google-gemma-3n-hackathon
+ * Authors: Glenn Cameron, Omar Sanseviero, Gus Martins, Ian Ballantyne, 
+ *            Kat Black, Mark Sherwood, Milen Ferev, Ronghui Zhu, 
+ *            Nilay Chauhan, Pulkit Bhuwalka, Emily Kosa, Addison Howard
+ * Year: 2025
+ */
+
 package com.gemma3n.smartlearning;
 
 import android.app.Activity;
@@ -95,9 +107,6 @@ public class FileListActivity extends AppCompatActivity {
         fileListViewModel.files.observe(this, files -> {
             if (files != null) {
                 fileListAdapter.setFiles(files);
-//                if (files.isEmpty()) {
-//                    Toast.makeText(this, "No text files found or permission issue.", Toast.LENGTH_LONG).show();
-//                }
             }
         });
 
@@ -288,8 +297,6 @@ public class FileListActivity extends AppCompatActivity {
             outputStream.flush();
             Log.i("FileListActivity", "File copied successfully to: " + destinationFile.getAbsolutePath());
             Toast.makeText(this, fileName + " imported successfully!", Toast.LENGTH_SHORT).show();
-
-//            String fileContent = readFileFromAssets(destinationFile.getAbsolutePath());
 
             String fileContent = readFileFromAssets(uri);
             List<String> textChunks = chunkText(fileContent, 100); // Chunk size of 100 words

@@ -1,3 +1,15 @@
+/*
+ * Smart Learning - AI-Powered Educational Android Application
+ * 
+ * This project was developed as part of the Google Gemma 3n Impact Challenge.
+ * 
+ * Competition: https://kaggle.com/competitions/google-gemma-3n-hackathon
+ * Authors: Glenn Cameron, Omar Sanseviero, Gus Martins, Ian Ballantyne, 
+ *            Kat Black, Mark Sherwood, Milen Ferev, Ronghui Zhu, 
+ *            Nilay Chauhan, Pulkit Bhuwalka, Emily Kosa, Addison Howard
+ * Year: 2025
+ */
+
 package com.gemma3n.smartlearning;
 
 import android.os.Bundle;
@@ -70,21 +82,6 @@ public class InteractionActivity extends AppCompatActivity {
                 }
             } else {
                 Log.d("InteractionActivity", "LLM not ready");
-                // Check if the LLM is still loading or if there was an error
-                // You might need a more specific state from LlmHelper/ViewModel for errors
-//                if (interactionViewModel.isLoading.getValue() != null && !interactionViewModel.isLoading.getValue()){
-//                    Log.d("InteractionActivity", "LLM Failed to Initialize");
-//                    //This implies LLM setup might have failed if it's not loading and not ready
-//                    llmLoadingIndicator.setVisibility(View.GONE);
-//                    llmLoadingText.setText("LLM Failed to Initialize. Please check logs.");
-//                    llmLoadingText.setVisibility(View.VISIBLE);
-//                } else {
-//                    Log.d("InteractionActivity", "LLM not ready yet");
-//                    llmLoadingIndicator.setVisibility(View.VISIBLE);
-//                    llmLoadingText.setText("Initializing LLM... This may take a moment.");
-//                    llmLoadingText.setVisibility(View.VISIBLE);
-//                    toggleModeButton.setVisibility(View.GONE);
-//                }
 
                 llmLoadingContainer.setVisibility(View.VISIBLE);
                 llmLoadingIndicator.playAnimation();
