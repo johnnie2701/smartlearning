@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,7 +46,7 @@ public class InteractionActivity extends AppCompatActivity {
 
         interactionViewModel = new ViewModelProvider(this).get(InteractionViewModel.class);
         // IMPORTANT: Initialize LLM helper here, passing the model path from assets
-        interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task"); // Replace with actual model name
+        interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task");
 
 
         Log.d("InteractionActivity", "LLM Initialized");
@@ -70,22 +69,6 @@ public class InteractionActivity extends AppCompatActivity {
                 }
             } else {
                 Log.d("InteractionActivity", "LLM not ready");
-                // Check if the LLM is still loading or if there was an error
-                // You might need a more specific state from LlmHelper/ViewModel for errors
-//                if (interactionViewModel.isLoading.getValue() != null && !interactionViewModel.isLoading.getValue()){
-//                    Log.d("InteractionActivity", "LLM Failed to Initialize");
-//                    //This implies LLM setup might have failed if it's not loading and not ready
-//                    llmLoadingIndicator.setVisibility(View.GONE);
-//                    llmLoadingText.setText("LLM Failed to Initialize. Please check logs.");
-//                    llmLoadingText.setVisibility(View.VISIBLE);
-//                } else {
-//                    Log.d("InteractionActivity", "LLM not ready yet");
-//                    llmLoadingIndicator.setVisibility(View.VISIBLE);
-//                    llmLoadingText.setText("Initializing LLM... This may take a moment.");
-//                    llmLoadingText.setVisibility(View.VISIBLE);
-//                    toggleModeButton.setVisibility(View.GONE);
-//                }
-
                 llmLoadingContainer.setVisibility(View.VISIBLE);
                 llmLoadingIndicator.playAnimation();
                 llmLoadingText.setText("Initializing LLM... This may take a moment.");

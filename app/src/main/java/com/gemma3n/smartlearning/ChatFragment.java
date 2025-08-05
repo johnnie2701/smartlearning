@@ -11,12 +11,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton; // Changed from Button
-import android.widget.ProgressBar;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -176,7 +174,7 @@ public class ChatFragment extends Fragment {
     private void observeViewModel() {
         interactionViewModel.chatMessages.observe(getViewLifecycleOwner(), messages -> {
             chatAdapter.setMessages(messages);
-            if (messages != null && messages.size() > 0) {
+            if (messages != null && !messages.isEmpty()) {
                 chatRecyclerView.smoothScrollToPosition(messages.size() - 1);
             }
         });

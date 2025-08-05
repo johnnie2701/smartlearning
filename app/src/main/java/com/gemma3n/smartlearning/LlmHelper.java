@@ -2,6 +2,7 @@ package com.gemma3n.smartlearning;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.google.mediapipe.tasks.genai.llminference.LlmInference;
 import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession;
 
@@ -24,6 +25,7 @@ public class LlmHelper {
     public interface LlmReadinessListener {
         void onLlmReady(boolean isReady);
     }
+
     final private LlmReadinessListener readinessListener;
 
     public LlmHelper(Context context, String modelPath, LlmReadinessListener listener) {
@@ -71,7 +73,6 @@ public class LlmHelper {
         return isLlmReady;
     }
 
-// TODO: Fix this
     public void setContext(String fileContent) {
         String initialContext = "you are a helpful teacher that helps a student to learn this lesson: ";
         llmChatSession.addQueryChunk(initialContext + fileContent);
@@ -98,7 +99,6 @@ public class LlmHelper {
         });
     }
 
-//TODO: Fix quiz prompts
     public void generateQuestionFromContext(Consumer<String> callback) {
         if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
@@ -118,7 +118,7 @@ public class LlmHelper {
         });
     }
 
-    public void evaluateAnswer(String question, String userAnswer, Consumer<String> callback) {
+    public void evaluateAnswer(String userAnswer, Consumer<String> callback) {
         if (!isLlmReady || llmChatInference == null || llmChatSession == null) {
             callback.accept("LLM is not ready.");
             return;

@@ -158,7 +158,7 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
         if (currentMessages != null && !currentMessages.isEmpty()) {
             ArrayList<ChatMessagePojo> updatedMessages = new ArrayList<>(currentMessages);
             // Remove the last message if it's a loading message
-            if (updatedMessages.size() > 0 && updatedMessages.get(updatedMessages.size() - 1).isLoading) {
+            if (!updatedMessages.isEmpty() && updatedMessages.get(updatedMessages.size() - 1).isLoading) {
                 updatedMessages.remove(updatedMessages.size() - 1);
                 _chatMessages.setValue(updatedMessages);
             }
@@ -191,7 +191,7 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
         _isLoading.setValue(true);
         _quizResponse.setValue(null);
         if (llmHelper != null) {
-            llmHelper.evaluateAnswer(question, userAnswer, response -> {
+            llmHelper.evaluateAnswer(userAnswer, response -> {
                 _quizResponse.setValue(response);
                 _isLoading.setValue(false);
             });

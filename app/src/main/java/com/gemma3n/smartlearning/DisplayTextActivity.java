@@ -9,7 +9,6 @@ import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,7 +89,7 @@ public class DisplayTextActivity extends AppCompatActivity {
                 Toast.makeText(this, "File path not provided. Saving will be disabled.", Toast.LENGTH_LONG).show();
                 actionButton.setEnabled(false);
                 actionButton.setAlpha(1.0f);
-                actionButton.setTextColor(getResources().getColor(R.color.black));
+                actionButton.setTextColor(getResources().getColor(R.color.black, null));
             }
         } else {
             Toast.makeText(this, "Error: Intent is null.", Toast.LENGTH_LONG).show();

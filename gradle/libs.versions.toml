@@ -8,6 +8,9 @@ material = "1.12.0"
 tasksGenai = "0.10.25"
 carUiLib = "2.6.0"
 localagentsRag = "0.2.0"
+lottie = "6.6.6"
+core = "4.6.2"
+html = "4.6.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -18,6 +21,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 tasks-genai = { group = "com.google.mediapipe", name = "tasks-genai", version.ref = "tasksGenai" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 localagents-rag = { group = "com.google.ai.edge.localagents", name = "localagents-rag", version.ref = "localagentsRag" }
+lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+core = { group = "io.noties.markwon", name = "core", version.ref = "core" }
+html = { group = "io.noties.markwon", name = "html", version.ref = "html" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
