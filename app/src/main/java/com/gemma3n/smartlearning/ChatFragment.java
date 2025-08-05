@@ -31,8 +31,6 @@ import io.noties.markwon.Markwon;
 import java.util.ArrayList;
 import java.util.Locale;
 
-// https://ai.google.dev/edge/mediapipe/solutions/genai/function_calling/android
-
 public class ChatFragment extends Fragment {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -47,6 +45,7 @@ public class ChatFragment extends Fragment {
     private Intent speechRecognizerIntent;
     private boolean isListening = false;
     private Markwon markwon; // For rendering markdown in chat responses
+    private static final String TAG = "ChatFragment";
 
     // Enum to manage button state
     private enum ButtonState {
@@ -180,14 +179,14 @@ public class ChatFragment extends Fragment {
         });
 
         interactionViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
-            Log.d("ChatFragment", "Loading state changed: " + isLoading + ", Mode: " + interactionViewModel.interactionMode.getValue());
+            Log.d(TAG, "Loading state changed: " + isLoading + ", Mode: " + interactionViewModel.interactionMode.getValue());
             if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.CHAT) {
                 // Keep the button enabled, but maybe change icon if loading a response
                 sendOrRecordButton.setEnabled(!isLoading);
                 inputEditText.setEnabled(!isLoading);
-                Log.d("ChatFragment", "Input controls " + (isLoading ? "disabled" : "enabled"));
+                Log.d(TAG, "Input controls " + (isLoading ? "disabled" : "enabled"));
             } else {
-                Log.d("ChatFragment", "Not in CHAT mode, ignoring loading state");
+                Log.d(TAG, "Not in CHAT mode, ignoring loading state");
             }
         });
     }

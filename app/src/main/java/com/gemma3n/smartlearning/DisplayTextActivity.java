@@ -43,7 +43,7 @@ public class DisplayTextActivity extends AppCompatActivity {
     }
     private ButtonState currentButtonState = ButtonState.READY_TO_REFORMAT;
     private String contentToSave;
-
+    private static final String TAG = "DisplayTextActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,15 +109,15 @@ public class DisplayTextActivity extends AppCompatActivity {
 
         actionButton.setOnClickListener(v -> {
             if (currentButtonState == ButtonState.READY_TO_REFORMAT) {
-                Log.d("DisplayTextActivity", "Reformat action initiated.");
+                Log.d(TAG, "Reformat action initiated.");
                 if (fileContent != null && !fileContent.isEmpty()) {
                     // Show initial message about reformat duration
                     Toast.makeText(this, "Starting reformat... This may take a few minutes.", Toast.LENGTH_LONG).show();
                     
-                    interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task");
+                    interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", "/data/local/tmp/llm/adapter_model.safetensors");
 
                     interactionViewModel.isLlmReady.observe(this, isReady -> {
-                        Log.d("DisplayTextActivity", "isLlmReady changed: " + isReady);
+                        Log.d(TAG, "isLlmReady changed: " + isReady);
                         if (isReady) {
                             interactionViewModel.reformatLesson(fileContent);
                         } else {
@@ -129,7 +129,7 @@ public class DisplayTextActivity extends AppCompatActivity {
                     Toast.makeText(this, "No content to reformat.", Toast.LENGTH_SHORT).show();
                 }
             } else if (currentButtonState == ButtonState.READY_TO_SAVE) {
-                Log.d("DisplayTextActivity", "Save action initiated.");
+                Log.d(TAG, "Save action initiated.");
                 if (contentToSave != null && filePath != null) {
                     saveContentToFile(contentToSave, filePath);
                 } else if (filePath == null) {
@@ -141,7 +141,7 @@ public class DisplayTextActivity extends AppCompatActivity {
         });
 
         interactionViewModel.isLoading.observe(this, isLoading -> {
-            Log.d("DisplayTextActivity", "isLoading: " + isLoading);
+            Log.d(TAG, "isLoading: " + isLoading);
             if (isLoading) {
                 llmLoadingContainer.setVisibility(View.VISIBLE);
                 reformatLoadingIndicator.playAnimation();
@@ -153,7 +153,7 @@ public class DisplayTextActivity extends AppCompatActivity {
 
         interactionViewModel.reformattedLesson.observe(this, reformattedLesson -> {
             if (reformattedLesson != null && !reformattedLesson.isEmpty()) {
-                Log.d("DisplayTextActivity", "reformattedLesson received");
+                Log.d(TAG, "reformattedLesson received");
                 fileContent = reformattedLesson;
                 if (textContentTextView != null) {
                     // Render markdown content
@@ -179,7 +179,7 @@ public class DisplayTextActivity extends AppCompatActivity {
     private void saveContentToFile(String content, String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             Toast.makeText(this, "Error: File path is invalid for saving.", Toast.LENGTH_LONG).show();
-            Log.e("DisplayTextActivity", "Save attempt with invalid file path.");
+            Log.e(TAG, "Save attempt with invalid file path.");
             return;
         }
 
@@ -192,7 +192,7 @@ public class DisplayTextActivity extends AppCompatActivity {
              OutputStreamWriter osw = new OutputStreamWriter(fos)) {
             osw.write(content);
             Toast.makeText(this, "Content saved successfully to " + file.getName(), Toast.LENGTH_LONG).show();
-            Log.i("DisplayTextActivity", "Content saved to: " + filePath);
+            Log.i(TAG, "Content saved to: " + filePath);
 
             // After saving, decide the next state
             fileContent = content; // The saved content is now the current content
@@ -201,7 +201,7 @@ public class DisplayTextActivity extends AppCompatActivity {
             updateButtonAppearance();
 
         } catch (IOException e) {
-            Log.e("DisplayTextActivity", "Error saving file: " + e.getMessage(), e);
+            Log.e(TAG, "Error saving file: " + e.getMessage(), e);
             Toast.makeText(this, "Error saving file: " + e.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             actionButton.setEnabled(true); // Re-enable button

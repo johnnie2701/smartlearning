@@ -15,6 +15,7 @@ public class LlmHelper {
     private static final String TAG = "LlmHelper";
     private final Context context;
     private final String modelPath;
+    private final String loraPath;
     private LlmInference llmChatInference;
     private LlmInferenceSession llmChatSession;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -28,9 +29,10 @@ public class LlmHelper {
 
     final private LlmReadinessListener readinessListener;
 
-    public LlmHelper(Context context, String modelPath, LlmReadinessListener listener) {
+    public LlmHelper(Context context, String modelPath, String loraPath, LlmReadinessListener listener) {
         this.context = context.getApplicationContext();
-        this.modelPath = modelPath; // e.g., "your_llm_model.tflite"
+        this.modelPath = modelPath;
+        this.loraPath = loraPath;
         this.readinessListener = listener;
         initializeLlm();
     }
@@ -49,7 +51,9 @@ public class LlmHelper {
 
                 LlmInferenceSession.LlmInferenceSessionOptions sessionOptions = LlmInferenceSession.LlmInferenceSessionOptions.builder()
                         .setTemperature(0)
-                        .setTopK(40)
+                        .setTopK(50)
+                        .setTopP(0.1f)
+                        .setLoraPath(loraPath)
                         .build();
 
                 llmChatSession = LlmInferenceSession.createFromOptions(llmChatInference, sessionOptions);

@@ -63,6 +63,7 @@ public class FileListActivity extends AppCompatActivity {
     private GeckoEmbeddingModel embeddingModel;
     private SqliteVectorStore vectorStore;
     private Executor backgroundExecutor;
+    private static final String TAG = "FileListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +96,6 @@ public class FileListActivity extends AppCompatActivity {
         fileListViewModel.files.observe(this, files -> {
             if (files != null) {
                 fileListAdapter.setFiles(files);
-//                if (files.isEmpty()) {
-//                    Toast.makeText(this, "No text files found or permission issue.", Toast.LENGTH_LONG).show();
-//                }
             }
         });
 
@@ -125,14 +123,14 @@ public class FileListActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         if (data != null && data.getData() != null) {
                             Uri selectedFileUri = data.getData();
-                            Log.d("FileListActivity", "File selected: " + selectedFileUri.toString());
+                            Log.d(TAG, "File selected: " + selectedFileUri.toString());
                             handleSelectedFile(selectedFileUri);
                         } else {
-                            Log.w("FileListActivity", "File selection returned null data or URI.");
+                            Log.w(TAG, "File selection returned null data or URI.");
                             Toast.makeText(this, "Failed to get selected file.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.d("FileListActivity", "File selection cancelled or failed. Result code: " + result.getResultCode());
+                        Log.d(TAG, "File selection cancelled or failed. Result code: " + result.getResultCode());
                     }
                 });
 
@@ -182,10 +180,10 @@ public class FileListActivity extends AppCompatActivity {
                                 if (file != null && !filesList.contains(file.toString()))
                                     filesList.add(file.toString());
                             }
-                            Log.d("FileListActivity", "Search result files: " + filesList);
+                            Log.d(TAG, "Search result files: " + filesList);
                             fileListViewModel.loadFiles(filesList);
                         } catch (InterruptedException | ExecutionException e) {
-                            Log.e("FileListActivity", "Error embedding or adding record: " + e.getMessage(), e);
+                            Log.e(TAG, "Error embedding or adding record: " + e.getMessage(), e);
                         }
                     });
                     return true;
@@ -201,14 +199,14 @@ public class FileListActivity extends AppCompatActivity {
             searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    Log.d("FileListActivity", "Collapse searchview ");
+                    Log.d(TAG, "Collapse searchview ");
                     fileListViewModel.loadFiles(lessonDirectoryPath);
                     return true; // Return true to allow collapse action
                 }
 
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-                    Log.d("FileListActivity", "Expand searchview ");
+                    Log.d(TAG, "Expand searchview ");
                     return true; // Return true to allow expand action
                 }
             });
@@ -217,14 +215,14 @@ public class FileListActivity extends AppCompatActivity {
             searchView.setOnCloseListener(new SearchView.OnCloseListener() {
                 @Override
                 public boolean onClose() {
-                    Log.d("FileListActivity", "Close searchview ");
+                    Log.d(TAG, "Close searchview ");
                     fileListViewModel.loadFiles(lessonDirectoryPath);
                     return true;
                 }
             });
 
         } else {
-            Log.e("FileListActivity", "SearchView is null in onCreateOptionsMenu");
+            Log.e(TAG, "SearchView is null in onCreateOptionsMenu");
         }
         return true; // True to display the menu
     }
@@ -243,7 +241,7 @@ public class FileListActivity extends AppCompatActivity {
         try {
             filePickerLauncher.launch(intent);
         } catch (Exception e) {
-            Log.e("FileListActivity", "Error opening file picker", e);
+            Log.e(TAG, "Error opening file picker", e);
             Toast.makeText(this, "Cannot open file picker. Is a file manager app installed?", Toast.LENGTH_LONG).show();
         }
     }
@@ -254,19 +252,19 @@ public class FileListActivity extends AppCompatActivity {
                 !fileName.toLowerCase().endsWith(".md") &&
                 !fileName.toLowerCase().endsWith(".text"))) {
             Toast.makeText(this, "Invalid file type. Please select a .txt, .md, or .text file.", Toast.LENGTH_LONG).show();
-            Log.w("FileListActivity", "Selected file is not of the allowed types: " + fileName);
+            Log.w(TAG, "Selected file is not of the allowed types: " + fileName);
             return;
         }
 
         if (destinationDir == null) {
             Toast.makeText(this, "Error accessing app storage directory.", Toast.LENGTH_SHORT).show();
-            Log.e("FileListActivity", "Failed to get external files directory 'imported_notes'.");
+            Log.e(TAG, "Failed to get external files directory 'imported_notes'.");
             return;
         }
         if (!destinationDir.exists()) {
             if (!destinationDir.mkdirs()) {
                 Toast.makeText(this, "Error creating destination directory.", Toast.LENGTH_SHORT).show();
-                Log.e("FileListActivity", "Failed to create directory: " + destinationDir.getAbsolutePath());
+                Log.e(TAG, "Failed to create directory: " + destinationDir.getAbsolutePath());
                 return;
             }
         }
@@ -286,7 +284,7 @@ public class FileListActivity extends AppCompatActivity {
                 outputStream.write(buffer, 0, length);
             }
             outputStream.flush();
-            Log.i("FileListActivity", "File copied successfully to: " + destinationFile.getAbsolutePath());
+            Log.i(TAG, "File copied successfully to: " + destinationFile.getAbsolutePath());
             Toast.makeText(this, fileName + " imported successfully!", Toast.LENGTH_SHORT).show();
 
 //            String fileContent = readFileFromAssets(destinationFile.getAbsolutePath());
@@ -320,7 +318,7 @@ public class FileListActivity extends AppCompatActivity {
                         vectorStore.insert(vectorStoreRecord);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    Log.e("FileListActivity", "Error embedding or adding record: " + e.getMessage(), e);
+                    Log.e(TAG, "Error embedding or adding record: " + e.getMessage(), e);
                     // Consider adding more robust error handling, e.g., callback to UI
                 }
             });
@@ -328,7 +326,7 @@ public class FileListActivity extends AppCompatActivity {
             fileListViewModel.loadFiles(lessonDirectoryPath);
 
         } catch (IOException e) {
-            Log.e("FileListActivity", "Error copying file", e);
+            Log.e(TAG, "Error copying file", e);
             Toast.makeText(this, "Error importing file: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -345,7 +343,7 @@ public class FileListActivity extends AppCompatActivity {
                     }
                 }
             } catch (Exception e) {
-                Log.e("FileListActivity", "Error getting file name from URI", e);
+                Log.e(TAG, "Error getting file name from URI", e);
             }
         }
         if (fileName == null) {

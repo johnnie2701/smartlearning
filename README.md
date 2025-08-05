@@ -109,7 +109,7 @@ androidTestImplementation(libs.espresso.core)
    - Place your Gemma-3n model file in the appropriate assets directory
    - Update the model path in `InteractionActivity.java`:
    ```java
-   interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task");
+   interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", "/data/local/tmp/llm/adapter_model.safetensors");
    ```
 
 4. **Assets and Resources**

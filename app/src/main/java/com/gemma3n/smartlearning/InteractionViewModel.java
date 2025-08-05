@@ -63,6 +63,7 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     public LiveData<Boolean> isLlmReady = _isLlmReady;
 
     private String pendingFileContext = null;
+    private static final String TAG = "InteractionViewModel";
 
     public InteractionViewModel(@NonNull Application application) {
         super(application);
@@ -71,9 +72,9 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     }
 
     // Call this after ViewModel creation and before use
-    public void initializeLlm(String modelAssetPath) {
+    public void initializeLlm(String modelAssetPath, String loraAssetPath) {
         if (llmHelper == null) {
-            this.llmHelper = new LlmHelper(getApplication(), modelAssetPath, this);
+            this.llmHelper = new LlmHelper(getApplication(), modelAssetPath, loraAssetPath, this);
         }
     }
 
@@ -109,27 +110,27 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     // --- Chat Methods ---
     public void sendChatMessage(String message) {
         if (message == null || message.trim().isEmpty() || Boolean.TRUE.equals(_isLoading.getValue())) {
-            Log.d("InteractionViewModel", "sendChatMessage: Skipping - message empty or already loading");
+            Log.d(TAG, "sendChatMessage: Skipping - message empty or already loading");
             return;
         }
-        Log.d("InteractionViewModel", "sendChatMessage: Starting - " + message);
+        Log.d(TAG, "sendChatMessage: Starting - " + message);
         addChatMessage(message, true);
         addLoadingMessage();
         _isLoading.setValue(true);
-        Log.d("InteractionViewModel", "sendChatMessage: Loading set to true");
+        Log.d(TAG, "sendChatMessage: Loading set to true");
         if (llmHelper != null) {
             llmHelper.generateChatResponse(message, response -> {
-                Log.d("InteractionViewModel", "sendChatMessage: Response received");
+                Log.d(TAG, "sendChatMessage: Response received");
                 removeLoadingMessage();
                 addChatMessage(response, false);
                 _isLoading.setValue(false);
-                Log.d("InteractionViewModel", "sendChatMessage: Loading set to false");
+                Log.d(TAG, "sendChatMessage: Loading set to false");
             });
         } else {
             removeLoadingMessage();
             addChatMessage("LLM not initialized.", false);
             _isLoading.setValue(false);
-            Log.d("InteractionViewModel", "sendChatMessage: LLM not initialized, loading set to false");
+            Log.d(TAG, "sendChatMessage: LLM not initialized, loading set to false");
         }
     }
 
@@ -222,7 +223,7 @@ public class InteractionViewModel extends AndroidViewModel implements LlmHelper.
     protected void onCleared() {
         super.onCleared();
         if (llmHelper != null) {
-            Log.d("InteractionViewModel", "Clearing LLM resources.");
+            Log.d(TAG, "Clearing LLM resources.");
             llmHelper.close();
         }
     }
