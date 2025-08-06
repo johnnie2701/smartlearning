@@ -45,7 +45,8 @@ public class InteractionActivity extends AppCompatActivity {
         }
 
         interactionViewModel = new ViewModelProvider(this).get(InteractionViewModel.class);
-        // IMPORTANT: Initialize LLM helper here, passing the model path from assets
+
+        //TODO: Replace adapter_model.safetensors with a flatbuffer converted file, the current version of mediapipe converter don't support gemma-3n
         interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", "/data/local/tmp/llm/adapter_model.safetensors");
 
 

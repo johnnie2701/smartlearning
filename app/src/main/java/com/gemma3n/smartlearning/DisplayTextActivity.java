@@ -113,7 +113,8 @@ public class DisplayTextActivity extends AppCompatActivity {
                 if (fileContent != null && !fileContent.isEmpty()) {
                     // Show initial message about reformat duration
                     Toast.makeText(this, "Starting reformat... This may take a few minutes.", Toast.LENGTH_LONG).show();
-                    
+
+                    //TODO: Replace adapter_model.safetensors with a flatbuffer converted file, the current version of mediapipe converter don't support gemma-3n
                     interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", "/data/local/tmp/llm/adapter_model.safetensors");
 
                     interactionViewModel.isLlmReady.observe(this, isReady -> {

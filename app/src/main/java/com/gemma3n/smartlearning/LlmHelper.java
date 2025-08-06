@@ -53,7 +53,7 @@ public class LlmHelper {
                         .setTemperature(0)
                         .setTopK(50)
                         .setTopP(0.1f)
-                        .setLoraPath(loraPath)
+//                        .setLoraPath(loraPath)
                         .build();
 
                 llmChatSession = LlmInferenceSession.createFromOptions(llmChatInference, sessionOptions);
