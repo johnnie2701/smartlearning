@@ -52,6 +52,8 @@ Smart Learning is designed for:
 - **`FileListActivity`**: Main entry point for file management
 - **`InteractionActivity`**: Container for chat and quiz interactions
 - **`DisplayTextActivity`**: Read-only file content display
+- **`ReceiveTranscriptActivity.java`**: Receive shared lessons (.txt) from apps like Recorder
+- **`WelcomeActivity.java`**: Welcome page
 
 #### AI/LLM Components
 - **`LlmHelper`**: Manages local LLM inference using Gemma-3n model
@@ -65,7 +67,6 @@ Smart Learning is designed for:
 #### Data Management
 - **`FileListAdapter`**: File list display management
 - **`ChatMessagesAdapter`**: Chat message display handling
-- **`FileItem`**: File data model
 
 ## 📦 Dependencies
 
@@ -76,13 +77,6 @@ implementation(libs.material)
 implementation(libs.tasks.genai)        // Google MediaPipe GenAI
 implementation(libs.car.ui.lib)         // Google Car UI Library
 implementation(libs.localagents.rag)    // Local Agents RAG
-```
-
-### Testing Dependencies
-```kotlin
-testImplementation(libs.junit)
-androidTestImplementation(libs.ext.junit)
-androidTestImplementation(libs.espresso.core)
 ```
 
 ## 🔧 Setup & Installation
@@ -105,11 +99,25 @@ androidTestImplementation(libs.espresso.core)
    - Launch Android Studio
    - Open the project from the cloned directory
 
-3. **Configure LLM Model**
-   - Place your Gemma-3n model file in the appropriate assets directory
+3. **Load the LLM model, the embedder and the tokenizer on device**
+   - Place your Gemma-3n model file in the appropriate assets directory.
+   The application was tested with `gemma-3n-E2B-it-int4.task` from https://huggingface.co/gummybear2555/Gemma-3n-E2B-it-int4/tree/main
+   pushed on `/data/local/tmp/llm/`
    - Update the model path in `InteractionActivity.java`:
    ```java
-   interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", "/data/local/tmp/llm/adapter_model.safetensors");
+   interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", ...);
+   ```
+   - Update the model path in `DisplayTextActivity.java`:
+   ```java
+   interactionViewModel.initializeLlm("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task", ...);
+   ```
+   - For lessons semantic search (RAG) an embedder and a tokenizer are needed. The application
+   was tested with `Gecko_256_quant.tflite` embedder and `sentencepiece.model` tokenizer
+   from https://huggingface.co/litert-community/Gecko-110m-en/tree/main
+   - The paths can be updated in `FileListActivity.java`
+   ```java
+   String geckoModelPath = "/data/local/tmp/llm/Gecko_256_quant.tflite";
+   String sentencePieceModelPath = "/data/local/tmp/llm/sentencepiece.model";
    ```
 
 4. **Assets and Resources**
@@ -117,18 +125,29 @@ androidTestImplementation(libs.espresso.core)
    - **Other Assets**: Place files in `app/src/main/assets/` for general asset storage
    - **Note**: Both folders are tracked in git to preserve animations and assets
 
-4. **Build and Run**
+5. **Build and Run**
    - Sync project with Gradle files
    - Build the project
-   - Run on an Android device or emulator (API 34+)
+   - Run on an Android device (API 34+)
 
 ### Permissions
 The app requires the following permissions:
 - `RECORD_AUDIO`: For speech recognition functionality
 
+### Platforms used for tests
+- **Pixel 7 Pro**
+
 ## 🎯 Usage Guide
 
 ### Getting Started
+**Method 1, share lessons from other apps (e.g. Record)**
+1. **Start recording a lesson**: Use Record app (or other audio recording app) to record a lesson (in class room)
+2. **Save transcript**: Save the transcript of the recorded lesson
+3. **Share the transcript (lesson)**: Share the transcript with SmartLearning app, the app is able to recive files
+4. **Reformat the lesson**: Use Reformat feature to make the lesson to be readeble (add headings, bulet points, paragraphs, etc.) and fix typos
+5. **Use Chat and Quiz**: Interact with AI and ask anything related to lesson and also try your knowledge in Quiz mode
+
+**Method 2, import lessons**
 1. **Launch the App**: Open Smart Learning from your device
 2. **Upload Files**: Tap the floating action button to import text files
 3. **Select Content**: Choose a file from the list to interact with
@@ -216,4 +235,4 @@ For support, please open an issue in the GitHub repository or contact the develo
 
 ---
 
-**Smart Learning** - Empowering education through local AI technology. 
+**Smart Learning** - Empowering education through local AI technology.
