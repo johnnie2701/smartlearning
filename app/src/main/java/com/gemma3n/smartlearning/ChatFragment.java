@@ -11,12 +11,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton; // Changed from Button
-import android.widget.ProgressBar;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,8 +31,6 @@ import io.noties.markwon.Markwon;
 import java.util.ArrayList;
 import java.util.Locale;
 
-// https://ai.google.dev/edge/mediapipe/solutions/genai/function_calling/android
-
 public class ChatFragment extends Fragment {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -49,6 +45,7 @@ public class ChatFragment extends Fragment {
     private Intent speechRecognizerIntent;
     private boolean isListening = false;
     private Markwon markwon; // For rendering markdown in chat responses
+    private static final String TAG = "ChatFragment";
 
     // Enum to manage button state
     private enum ButtonState {
@@ -104,7 +101,6 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onReadyForSpeech(Bundle params) {
                     Log.d("SpeechRecognizer", "Ready for speech");
-                    // You could change UI here, e.g., mic icon to glowing
                 }
 
                 @Override
@@ -177,20 +173,20 @@ public class ChatFragment extends Fragment {
     private void observeViewModel() {
         interactionViewModel.chatMessages.observe(getViewLifecycleOwner(), messages -> {
             chatAdapter.setMessages(messages);
-            if (messages != null && messages.size() > 0) {
+            if (messages != null && !messages.isEmpty()) {
                 chatRecyclerView.smoothScrollToPosition(messages.size() - 1);
             }
         });
 
         interactionViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
-            Log.d("ChatFragment", "Loading state changed: " + isLoading + ", Mode: " + interactionViewModel.interactionMode.getValue());
+            Log.d(TAG, "Loading state changed: " + isLoading + ", Mode: " + interactionViewModel.interactionMode.getValue());
             if (interactionViewModel.interactionMode.getValue() == InteractionModePojo.CHAT) {
                 // Keep the button enabled, but maybe change icon if loading a response
                 sendOrRecordButton.setEnabled(!isLoading);
                 inputEditText.setEnabled(!isLoading);
-                Log.d("ChatFragment", "Input controls " + (isLoading ? "disabled" : "enabled"));
+                Log.d(TAG, "Input controls " + (isLoading ? "disabled" : "enabled"));
             } else {
-                Log.d("ChatFragment", "Not in CHAT mode, ignoring loading state");
+                Log.d(TAG, "Not in CHAT mode, ignoring loading state");
             }
         });
     }
@@ -225,30 +221,6 @@ public class ChatFragment extends Fragment {
                 handleRecordButtonPress();
             }
         });
-
-        // Optional: Use OnTouchListener for press-and-hold to record
-        // This is a more common UX for voice input
-//        sendOrRecordButton.setOnTouchListener((view, motionEvent) -> {
-//            if (currentButtonState == ButtonState.RECORD) {
-//                switch (motionEvent.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        if (!isListening) {
-//                            startListening();
-//                            sendOrRecordButton.setImageResource(R.drawable.ic_mic); // Can use a "listening" mic icon
-//                            view.performClick(); // For accessibility
-//                        }
-//                        return true; // Consume event
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        if (isListening) {
-//                            stopListening();
-//                            sendOrRecordButton.setImageResource(R.drawable.ic_mic); // Back to normal mic
-//                        }
-//                        return true; // Consume event
-//                }
-//            }
-//            return false; // Let onClickListener handle if it's SEND state or other cases
-//        });
     }
 
     private void handleRecordButtonPress() {

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,11 +19,12 @@ import androidx.lifecycle.ViewModelProvider;
 public class QuizFragment extends Fragment {
 
     private InteractionViewModel interactionViewModel;
-    private TextView questionTextView, feedbackTextView;
+    private TextView questionTextView, feedbackTextView, userAnswerTextView;
     private EditText answerEditText;
     private Button generateQuestionButton, submitAnswerButton;
     private LottieAnimationView quizLoadingIndicator;
     private LinearLayout questionAnswerLayout, feedbackLayout;
+    private String lastUserAnswer = "";
 
     @Nullable
     @Override
@@ -34,6 +34,7 @@ public class QuizFragment extends Fragment {
         // Initialize UI elements
         questionTextView = view.findViewById(R.id.questionTextView);
         feedbackTextView = view.findViewById(R.id.feedbackTextView);
+        userAnswerTextView = view.findViewById(R.id.userAnswerTextView);
         answerEditText = view.findViewById(R.id.answerEditText);
         generateQuestionButton = view.findViewById(R.id.generateQuestionButton);
         submitAnswerButton = view.findViewById(R.id.submitAnswerButton);
@@ -88,6 +89,11 @@ public class QuizFragment extends Fragment {
         interactionViewModel.quizResponse.observe(getViewLifecycleOwner(), response -> {
             if (response != null && !response.isEmpty()) {
                 feedbackTextView.setText(response);
+                // Display the user's answer
+                if (!lastUserAnswer.isEmpty()) {
+                    userAnswerTextView.setText(lastUserAnswer);
+                    userAnswerTextView.setVisibility(View.VISIBLE);
+                }
                 feedbackLayout.setVisibility(View.VISIBLE);
             } else {
                 feedbackLayout.setVisibility(View.GONE);
@@ -129,6 +135,9 @@ public class QuizFragment extends Fragment {
             // Clear previous answer and feedback when requesting a new question
             answerEditText.setText("");
             feedbackTextView.setText("");
+            lastUserAnswer = ""; // Clear stored answer
+            userAnswerTextView.setText("");
+            userAnswerTextView.setVisibility(View.GONE);
             feedbackLayout.setVisibility(View.GONE);
             questionAnswerLayout.setVisibility(View.GONE); // Hide until new question arrives
         });
@@ -136,6 +145,7 @@ public class QuizFragment extends Fragment {
         submitAnswerButton.setOnClickListener(v -> {
             String userAnswer = answerEditText.getText().toString().trim();
             if (!userAnswer.isEmpty()) {
+                lastUserAnswer = userAnswer; // Store the user's answer
                 interactionViewModel.submitAnswer(userAnswer);
                 answerEditText.setText(""); // Clear after submission
             } else {

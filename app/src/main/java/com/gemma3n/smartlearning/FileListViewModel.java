@@ -28,13 +28,13 @@ public class FileListViewModel extends AndroidViewModel {
     private final MutableLiveData<String> _error = new MutableLiveData<>(null);
     public LiveData<String> error = _error;
 
-
-//    private final String directoryPath = "/data/local/tmp/llm/files";
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public FileListViewModel(@NonNull Application application) {
         super(application);
     }
+    
+    private final String TAG = "FileListViewModel";
 
     public void loadFiles(String directoryPath) {
         executorService.execute(() -> {
@@ -44,7 +44,7 @@ public class FileListViewModel extends AndroidViewModel {
                     File[] foundFiles = directory.listFiles((dir, name) ->
                             name.endsWith(".txt") || name.endsWith(".md") || name.endsWith(".text"));
                     if (foundFiles != null) {
-                        Log.d("FileListViewModel", "Found files: " + Arrays.toString(foundFiles));
+                        Log.d(TAG, "Found files: " + Arrays.toString(foundFiles));
                         _files.postValue(new ArrayList<>(Arrays.asList(foundFiles)));
                     } else {
                         _files.postValue(new ArrayList<>());
@@ -71,7 +71,7 @@ public class FileListViewModel extends AndroidViewModel {
                     File filePath = new File(file);
                     foundFiles.add(filePath);
                 }
-                Log.d("FileListViewModel", "Search result files: " + foundFiles);
+                Log.d(TAG, "Search result files: " + foundFiles);
                 _files.postValue(foundFiles);
             } catch (SecurityException e) {
                 _files.postValue(new ArrayList<>());
