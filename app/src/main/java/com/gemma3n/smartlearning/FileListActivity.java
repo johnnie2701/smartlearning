@@ -26,7 +26,8 @@ import com.google.ai.edge.localagents.rag.memory.ColumnConfig;
 import com.google.ai.edge.localagents.rag.memory.VectorStoreRecord;
 import com.google.ai.edge.localagents.rag.models.EmbedData;
 import com.google.ai.edge.localagents.rag.models.EmbeddingRequest;
-import com.google.ai.edge.localagents.rag.models.GeckoEmbeddingModel;
+//import com.google.ai.edge.localagents.rag.models.GeckoEmbeddingModel;
+import com.google.ai.edge.localagents.rag.models.GemmaEmbeddingModel;
 import com.google.ai.edge.localagents.rag.memory.SqliteVectorStore;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.collect.ImmutableList;
@@ -60,7 +61,8 @@ public class FileListActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> filePickerLauncher;
     private String lessonDirectoryPath;
     private File destinationDir;
-    private GeckoEmbeddingModel embeddingModel;
+//    private GeckoEmbeddingModel embeddingModel;
+    private GemmaEmbeddingModel gemmaEmbeddingModel;
     private SqliteVectorStore vectorStore;
     private Executor backgroundExecutor;
     private static final String TAG = "FileListActivity";
@@ -138,9 +140,13 @@ public class FileListActivity extends AppCompatActivity {
 
         backgroundExecutor = Executors.newSingleThreadExecutor();
 
-        String geckoModelPath = "/data/local/tmp/llm/Gecko_256_quant.tflite";
-        String sentencePieceModelPath = "/data/local/tmp/llm/sentencepiece.model";
-        embeddingModel = new GeckoEmbeddingModel(geckoModelPath, Optional.of(sentencePieceModelPath), true);
+//        String geckoModelPath = "/data/local/tmp/llm/Gecko_256_quant.tflite";
+//        String sentencePieceGeckoModelPath = "/data/local/tmp/llm/sentencepiece_gecko.model";
+//        embeddingModel = new GeckoEmbeddingModel(geckoModelPath, Optional.of(sentencePieceGeckoModelPath), true);
+
+        String embeddingGemmaModelPath = "/data/local/tmp/llm/embeddinggemma-300M_seq256_mixed-precision.tflite";
+        String sentencePieceGemmaModelPath = "/data/local/tmp/llm/sentencepiece_gemma.model";
+        gemmaEmbeddingModel = new GemmaEmbeddingModel(embeddingGemmaModelPath, sentencePieceGemmaModelPath, true);
 
         // Initialize the SqliteVectorStore
         File dbFile = new File(getFilesDir(), "text_search.db");
@@ -167,13 +173,16 @@ public class FileListActivity extends AppCompatActivity {
                     EmbedData<String> embedData = EmbedData.create(query, EmbedData.TaskType.RETRIEVAL_QUERY);
                     EmbeddingRequest<String> embeddingRequest = EmbeddingRequest.create(Collections.singletonList(embedData));
 
+//                    ListenableFuture<ImmutableList<Float>> embeddingFuture =
+//                            embeddingModel.getEmbeddings(embeddingRequest);
+
                     ListenableFuture<ImmutableList<Float>> embeddingFuture =
-                            embeddingModel.getEmbeddings(embeddingRequest);
+                            gemmaEmbeddingModel.getEmbeddings(embeddingRequest);
 
                     backgroundExecutor.execute(() -> {
                         try {
                             ImmutableList<Float> embedding = embeddingFuture.get();
-                            ImmutableList<VectorStoreRecord<String>> records =  vectorStore.getNearestRecords(embedding, 10, 0.7f);
+                            ImmutableList<VectorStoreRecord<String>> records =  vectorStore.getNearestRecords(embedding, 10, 0.3f);
                             List<String> filesList = new ArrayList<>();
                             for (VectorStoreRecord<String> record : records) {
                                 Object file = record.getMetadata().get("file_name");
@@ -300,8 +309,11 @@ public class FileListActivity extends AppCompatActivity {
             EmbeddingRequest<String> embeddingRequest =
                     EmbeddingRequest.create(embedDataList);
 
+//            ListenableFuture<ImmutableList<ImmutableList<Float>>> embeddingFuture =
+//                    embeddingModel.getBatchEmbeddings(embeddingRequest);
+
             ListenableFuture<ImmutableList<ImmutableList<Float>>> embeddingFuture =
-                    embeddingModel.getBatchEmbeddings(embeddingRequest);
+                    gemmaEmbeddingModel.getBatchEmbeddings(embeddingRequest);
 
             backgroundExecutor.execute(() -> {
                 try {
