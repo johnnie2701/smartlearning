@@ -3,25 +3,9 @@ package com.gemma3n.smartlearning;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.ai.edge.localagents.core.proto.Content;
-import com.google.ai.edge.localagents.core.proto.FunctionCall;
-import com.google.ai.edge.localagents.core.proto.FunctionDeclaration;
-import com.google.ai.edge.localagents.core.proto.FunctionResponse;
-import com.google.ai.edge.localagents.core.proto.GenerateContentResponse;
-import com.google.ai.edge.localagents.core.proto.Part;
-import com.google.ai.edge.localagents.core.proto.Tool;
-import com.google.ai.edge.localagents.fc.ChatSession;
-import com.google.ai.edge.localagents.fc.GemmaFormatter;
-import com.google.ai.edge.localagents.fc.GenerativeModel;
-import com.google.ai.edge.localagents.fc.LlmInferenceBackend;
 import com.google.mediapipe.tasks.genai.llminference.LlmInference;
 import com.google.mediapipe.tasks.genai.llminference.LlmInferenceSession;
-import com.google.protobuf.Struct;
-import com.google.protobuf.Value;
-//import com.google.ai.generativelanguage.v1main.Content;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer; // Requires API 24+
@@ -34,28 +18,16 @@ public class LlmHelper {
     private final String loraPath;
     private LlmInference llmChatInference;
     private LlmInferenceSession llmChatSession;
-    private LlmInferenceBackend llmInferenceBackend;
-    private Tool tool;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean isLlmReady = false;
     private String quizPrompt;
-    final private LlmReadinessListener readinessListener;
+
     // Listener for readiness
     public interface LlmReadinessListener {
         void onLlmReady(boolean isReady);
     }
 
-    static class ToolsForLlm {
-        public static String getDeviceLanguage() {
-            Locale currentLocale = Locale.getDefault();
-            String lang = currentLocale.toString();
-            Log.d("ToolsForLlm", "Device language: " + lang);
-            lang = "en_US";
-            return lang;
-        }
-
-        private ToolsForLlm() {}
-    }
+    final private LlmReadinessListener readinessListener;
 
     public LlmHelper(Context context, String modelPath, String loraPath, LlmReadinessListener listener) {
         this.context = context.getApplicationContext();
@@ -85,12 +57,6 @@ public class LlmHelper {
                         .build();
 
                 llmChatSession = LlmInferenceSession.createFromOptions(llmChatInference, sessionOptions);
-                FunctionDeclaration getLanguage = FunctionDeclaration.newBuilder()
-                        .setName("getDeviceLanguage")
-                        .setDescription("Returns the system language set on the device.")
-                        .build();
-                tool = Tool.newBuilder().addFunctionDeclarations(getLanguage).build();
-                llmInferenceBackend = new LlmInferenceBackend(llmChatInference, new GemmaFormatter());
                 isLlmReady = true;
                 if (readinessListener != null) {
                     // Post to main thread if listener updates UI
@@ -182,7 +148,7 @@ public class LlmHelper {
 
         executorService.execute(() -> {
             try {
-                String msg = "Translate this educational content into device's language only if it is in a different language and then reformat it into clear, structured markdown:\n\n" +
+                String prompt = "Reformat this educational content into clear, structured markdown:\n\n" +
                         "1. Create a main title using #\n" +
                         "2. Use ## for main sections\n" +
                         "3. Use ### for subsections\n" +
@@ -192,62 +158,15 @@ public class LlmHelper {
                         "7. Organize information logically\n" +
                         "8. Make it easy to read and study\n\n" +
                         "Content to reformat:\n" + fileContent;
-
-                Content systemInstruction = Content.newBuilder()
-                        .setRole("system")
-                        .addParts(Part.newBuilder().setText("You are a helpful teacher that helps a student to structure their lesson into clear, structured markdown and translate it into the specified language."))
-                        .build();
-                GenerativeModel generativeModel = new GenerativeModel(
-                        llmInferenceBackend,
-                        systemInstruction,
-                        List.of(tool));
-                ChatSession chat = generativeModel.startChat();
-                GenerateContentResponse response = chat.sendMessage(msg);
-                Part message = response.getCandidates(0).getContent().getParts(0);
-                if (message.hasFunctionCall()) {
-                    FunctionCall functionCall = message.getFunctionCall();
-                    Log.d(TAG, "Function call: " + functionCall.getName());
-                    String result = null;
-                    switch (functionCall.getName()) {
-                        case "getDeviceLanguage":
-                            result = ToolsForLlm.getDeviceLanguage();
-                            break;
-                        default:
-                            Log.e(TAG, "Unknown function call: " + functionCall.getName());
-                            throw new Exception("Unknown function call: " + functionCall.getName());
-                    }
-                    FunctionResponse functionResponse = FunctionResponse.newBuilder()
-                            .setName(functionCall.getName())
-                            .setResponse(
-                                    Struct.newBuilder()
-                                            .putFields("result", Value.newBuilder().setStringValue(result).build())
-                            ).build();
-                    Content functionResponseContent = Content.newBuilder()
-                            .setRole("user")
-                            .addParts(Part.newBuilder().setFunctionResponse(functionResponse))
-                            .build();
-                    GenerateContentResponse resp = chat.sendMessage(functionResponseContent);
-                    message = resp.getCandidates(0).getContent().getParts(0);
-                    if (message.hasText()) {
-                        String reformattedLesson = message.getText();
-                        new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(reformattedLesson));
-                    } else {
-                        Log.e(TAG, "No text in response");
-                        throw new Exception("No text in response");
-                    }
-                } else if (message.hasText()) {
-                    String reformattedLesson = message.getText();
-                    new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(reformattedLesson));
-                }
-
-//                String result = llmChatInference.generateResponse(prompt);
-//                new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result));
+                String result = llmChatInference.generateResponse(prompt);
+                new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(result));
             } catch (Exception e) {
                 Log.e(TAG, "Error reformatting the lesson: " + e.getMessage(), e);
                 new android.os.Handler(context.getMainLooper()).post(() -> callback.accept(null));
             }
         });
     }
+
 
     public void close() {
         executorService.execute(() -> {

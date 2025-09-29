@@ -1,16 +1,17 @@
 [versions]
-agp = "8.11.0"
+agp = "8.11.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.1"
 material = "1.12.0"
-tasksGenai = "0.10.25"
 carUiLib = "2.6.0"
-localagentsRag = "0.2.0"
 lottie = "6.6.6"
 core = "4.6.2"
 html = "4.6.2"
+localagentsFc = "0.1.0"
+kotlin = "2.2.0"
+coreKtx = "1.17.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -18,13 +19,16 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitV
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-tasks-genai = { group = "com.google.mediapipe", name = "tasks-genai", version.ref = "tasksGenai" }
+tasks-genai = { group = "com.google.mediapipe", name = "tasks-genai", version = "0.10.29" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
-localagents-rag = { group = "com.google.ai.edge.localagents", name = "localagents-rag", version.ref = "localagentsRag" }
+localagents-rag = { group = "com.google.ai.edge.localagents", name = "localagents-rag", version = "0.3.0" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 core = { group = "io.noties.markwon", name = "core", version.ref = "core" }
 html = { group = "io.noties.markwon", name = "html", version.ref = "html" }
+localagents-fc = { group = "com.google.ai.edge.localagents", name = "localagents-fc", version.ref = "localagentsFc" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
